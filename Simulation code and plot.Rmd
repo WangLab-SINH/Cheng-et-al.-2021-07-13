@@ -535,7 +535,10 @@ cost_IncrementRandBool_rpall = cost_IncrementRandBool
 ```{r}
 #select select strength
 sele_strength = 0.05
-cost_IncrementConsAbs_rpall = exp(log(1+cost_IncrementRandAbs_rpall)*(1 - sele_strength))-1 
+print(max(cost_IncrementRandAbs_rpall))
+print(min(cost_IncrementRandAbs_rpall))
+#cost_IncrementConsAbs_rpall = exp(log(1+cost_IncrementRandAbs_rpall)*(1 - sele_strength))-1 
+cost_IncrementConsAbs_rpall = exp(log(cost_IncrementRandAbs_rpall)*(1 - sele_strength))
 expr_IncrementCons = cost_IncrementConsAbs_rpall/cost_IncrementRandAbs_rpall * expr_IncrementRand
 expr_constrained = expr_need + expr_IncrementCons
 ```
@@ -609,87 +612,87 @@ matrix_gene_func_BoolCir = matrix_gene_func_BoolCir[,id_tmp]
 
 
 ```{r, include=T}
-matrix_gene_func_bool %>% colSums() %>% table() %>%
-  plot(log='x'
-       ,xlab = 'gene numbers in one function',ylab = 'frequence')
-text(70,300
-     ,paste0('mean=',matrix_gene_func_bool %>% colSums() %>% mean() %>% round(digits = 2))
-     ,cex = 1.2)
-matrix_gene_func_BoolCir %>% colSums() %>% table() %>%
-  plot(log='x'
-       ,xlab = 'circadian gene numbers in one function',ylab = 'frequence')
-text(40,150
-     ,paste0('mean=',matrix_gene_func_BoolCir %>% colSums() %>% mean() %>% round(digits = 2))
-     ,cex = 1.2)
-matrix_gene_func_bool %>% rowSums() %>% table() %>%
-  plot(log=''
-       ,xlab = 'function numbers in one gene',ylab = 'frequence')
-text(12,2500
-     ,paste0('mean=',matrix_gene_func_bool %>% rowSums() %>% mean() %>% round(digits = 2))
-     ,cex = 1.2)
-matrix_gene_func_BoolCir %>% rowSums() %>% table() %>%
-  plot(log=''
-       ,xlab = 'function numbers in one circadian gene',ylab = 'frequence')
-text(12,300
-     ,paste0('mean=',matrix_gene_func_BoolCir %>% rowSums() %>% mean() %>% round(digits = 2))
-     ,cex = 1.2)
+# matrix_gene_func_bool %>% colSums() %>% table() %>%
+#   plot(log='x'
+#        ,xlab = 'gene numbers in one function',ylab = 'frequence')
+# text(70,300
+#      ,paste0('mean=',matrix_gene_func_bool %>% colSums() %>% mean() %>% round(digits = 2))
+#      ,cex = 1.2)
+# matrix_gene_func_BoolCir %>% colSums() %>% table() %>%
+#   plot(log='x'
+#        ,xlab = 'circadian gene numbers in one function',ylab = 'frequence')
+# text(40,150
+#      ,paste0('mean=',matrix_gene_func_BoolCir %>% colSums() %>% mean() %>% round(digits = 2))
+#      ,cex = 1.2)
+# matrix_gene_func_bool %>% rowSums() %>% table() %>%
+#   plot(log=''
+#        ,xlab = 'function numbers in one gene',ylab = 'frequence')
+# text(12,2500
+#      ,paste0('mean=',matrix_gene_func_bool %>% rowSums() %>% mean() %>% round(digits = 2))
+#      ,cex = 1.2)
+# matrix_gene_func_BoolCir %>% rowSums() %>% table() %>%
+#   plot(log=''
+#        ,xlab = 'function numbers in one circadian gene',ylab = 'frequence')
+# text(12,300
+#      ,paste0('mean=',matrix_gene_func_BoolCir %>% rowSums() %>% mean() %>% round(digits = 2))
+#      ,cex = 1.2)
 ```
 
 
 
 ```{r}
-(matrix_gene_func_BoolCir %>% rowSums() %>% table() /
-    (matrix_gene_func_bool %>% rowSums() %>% table())[rownames(
-      matrix_gene_func_BoolCir %>% rowSums() %>% table())]) %>%
-  plot(
-    main = 'simulation',ylab = 'cir/all ratio',xlab = 'function number'
-  )
-tmp1 = (matrix_gene_func_bool[metatest$meta$meta2d_BH.Q<0.05,] %>% colSums())
-tmp2 = matrix_gene_func_bool %>% colSums()
-point_pcc(log10(tmp2[tmp1!=0]),log10(tmp1[tmp1!=0])
-          ,main = 'simulation',ylab = 'log10(cir number)',xlab = 'log10(term size)'
-          ,textx = 0.1,text1y = 2,text2y = 1.6)
-
-tmp1 = (matrix_gene_func_bool[metatest$meta$meta2d_BH.Q<0.05,] %>% colSums()) /
-  (matrix_gene_func_bool %>% colSums())
-tmp2 = matrix_gene_func_bool %>% colSums()
-point_pcc(log10(tmp2[tmp1!=0]),tmp1[tmp1!=0]
-          ,xlab = 'log10(term size)',main = 'simulation',ylab = 'cir/all ratio'
-          ,textx = 0,text1y = 0.2,text2y = 0.1)
-cor.test(log10(tmp2[tmp1!=0]),tmp1[tmp1!=0])
-
-id_tmp = sample(gene_num,sum(metatest$meta$meta2d_BH.Q<0.05))
-tmp1 = (matrix_gene_func_bool[id_tmp,] %>% colSums())
-tmp2 = matrix_gene_func_bool %>% colSums()
-point_pcc(log10(tmp2[tmp1!=0]),log10(tmp1[tmp1!=0])
-          ,main = 'simulation',ylab = 'log10(cir number)',xlab = 'log10(term size)'
-          ,textx = 0.1,text1y = 2,text2y = 1.6)
-
-tmp1 = (matrix_gene_func_bool[id_tmp,] %>% colSums()) /
-  (matrix_gene_func_bool %>% colSums())
-tmp2 = matrix_gene_func_bool %>% colSums()
-point_pcc(log10(tmp2[tmp1!=0]),tmp1[tmp1!=0]
-          ,xlab = 'log10(term size)',main = 'simulation',ylab = 'cir/all ratio'
-          ,textx = 0,text1y = 0.2,text2y = 0.1)
-cor.test(log10(tmp2[tmp1!=0]),tmp1[tmp1!=0])
+# (matrix_gene_func_BoolCir %>% rowSums() %>% table() /
+#     (matrix_gene_func_bool %>% rowSums() %>% table())[rownames(
+#       matrix_gene_func_BoolCir %>% rowSums() %>% table())]) %>%
+#   plot(
+#     main = 'simulation',ylab = 'cir/all ratio',xlab = 'function number'
+#   )
+# tmp1 = (matrix_gene_func_bool[metatest$meta$meta2d_BH.Q<0.05,] %>% colSums())
+# tmp2 = matrix_gene_func_bool %>% colSums()
+# point_pcc(log10(tmp2[tmp1!=0]),log10(tmp1[tmp1!=0])
+#           ,main = 'simulation',ylab = 'log10(cir number)',xlab = 'log10(term size)'
+#           ,textx = 0.1,text1y = 2,text2y = 1.6)
+# 
+# tmp1 = (matrix_gene_func_bool[metatest$meta$meta2d_BH.Q<0.05,] %>% colSums()) /
+#   (matrix_gene_func_bool %>% colSums())
+# tmp2 = matrix_gene_func_bool %>% colSums()
+# point_pcc(log10(tmp2[tmp1!=0]),tmp1[tmp1!=0]
+#           ,xlab = 'log10(term size)',main = 'simulation',ylab = 'cir/all ratio'
+#           ,textx = 0,text1y = 0.2,text2y = 0.1)
+# cor.test(log10(tmp2[tmp1!=0]),tmp1[tmp1!=0])
+# 
+# id_tmp = sample(gene_num,sum(metatest$meta$meta2d_BH.Q<0.05))
+# tmp1 = (matrix_gene_func_bool[id_tmp,] %>% colSums())
+# tmp2 = matrix_gene_func_bool %>% colSums()
+# point_pcc(log10(tmp2[tmp1!=0]),log10(tmp1[tmp1!=0])
+#           ,main = 'simulation',ylab = 'log10(cir number)',xlab = 'log10(term size)'
+#           ,textx = 0.1,text1y = 2,text2y = 1.6)
+# 
+# tmp1 = (matrix_gene_func_bool[id_tmp,] %>% colSums()) /
+#   (matrix_gene_func_bool %>% colSums())
+# tmp2 = matrix_gene_func_bool %>% colSums()
+# point_pcc(log10(tmp2[tmp1!=0]),tmp1[tmp1!=0]
+#           ,xlab = 'log10(term size)',main = 'simulation',ylab = 'cir/all ratio'
+#           ,textx = 0,text1y = 0.2,text2y = 0.1)
+# cor.test(log10(tmp2[tmp1!=0]),tmp1[tmp1!=0])
 ```
 
 
 ```{r}
-plot(colSums(matrix_func_time_bool),type = 'l')
-id_cir = metatest$meta$meta2d_BH.Q<0.05
-plot(metatest$meta$meta2d_Base,metatest$meta$meta2d_AMP,log = 'xy',
-     xlab = 'log(expr)',ylab = 'log(amp)')
-plot(metatest$meta$meta2d_Base[id_cir],metatest$meta$meta2d_AMP[id_cir],log = 'xy',
-     xlab = 'log(expr)',ylab = 'log(amp)')
-rowmean_cost = rowMeans(expr_constrained)
-plot(metatest$meta$meta2d_Base[id_cir],rowmean_cost[id_cir],log = 'xy',
-     xlab = 'log(expr)',ylab = 'log(cost)')
-plot(n_level_num(data = rowMeans(expr_constrained),id = id_cir)
-     ,type = 'l',
-     ylab = 'circadian gene number')
-tmp = n_level_num(apply(expr_constrained, 1, function(x){max(x) - min(x)}) %>% unlist,id = id_cir)
-plot(tmp,type = 'l',ylab = 'circadian gene number')
+# plot(colSums(matrix_func_time_bool),type = 'l')
+# id_cir = metatest$meta$meta2d_BH.Q<0.05
+# plot(metatest$meta$meta2d_Base,metatest$meta$meta2d_AMP,log = 'xy',
+#      xlab = 'log(expr)',ylab = 'log(amp)')
+# plot(metatest$meta$meta2d_Base[id_cir],metatest$meta$meta2d_AMP[id_cir],log = 'xy',
+#      xlab = 'log(expr)',ylab = 'log(amp)')
+# rowmean_cost = rowMeans(expr_constrained)
+# plot(metatest$meta$meta2d_Base[id_cir],rowmean_cost[id_cir],log = 'xy',
+#      xlab = 'log(expr)',ylab = 'log(cost)')
+# plot(n_level_num(data = rowMeans(expr_constrained),id = id_cir)
+#      ,type = 'l',
+#      ylab = 'circadian gene number')
+# tmp = n_level_num(apply(expr_constrained, 1, function(x){max(x) - min(x)}) %>% unlist,id = id_cir)
+# plot(tmp,type = 'l',ylab = 'circadian gene number')
 ```
 
 

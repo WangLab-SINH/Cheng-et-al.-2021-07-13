@@ -43,7 +43,7 @@ draw_heatmap_function('ContainedData/Meta2dResult/AllSpecies/Arabidopsis_SD LEAF
 draw_heatmap_function('ContainedData/Meta2dResult/AllSpecies/Arabidopsis_SD M.csv',  24,35,"Arabidopsis SD M")
 draw_heatmap_function('ContainedData/Meta2dResult/AllSpecies/Arabidopsis_SD VA.csv',  24,35,"Arabidopsis SD VA")
 
-draw_heatmap_function('ContainedData/Meta2dResult/AllSpecies/Neurospora.csv',  24,35,"Neurospora")
+draw_heatmap_function('ContainedData/Meta2dResult/AllSpecies/Neurospora_for_heatmap.csv',  19,42,"Neurospora")
 
 draw_heatmap_function('ContainedData/Meta2dResult/AllSpecies/Chlamydomounas_for_heatmap.csv',  19,26,"Chlamydomounas")
 
@@ -205,10 +205,10 @@ for(i in 1:nrow(venn_data_new))
   common_num = as.numeric(venn_data_new[i,5])
   if(data1_all > data2_all)
   {
-    number_flag = 0
+    number_flag = 180
   }else
   {
-    number_flag = 180
+    number_flag = 0
   }
 
   temp_plot <- draw.pairwise.venn.pro(

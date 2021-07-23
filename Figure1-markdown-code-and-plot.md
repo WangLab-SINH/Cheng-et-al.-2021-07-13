@@ -90,7 +90,7 @@ draw_heatmap_function('ContainedData/Meta2dResult/AllSpecies/Arabidopsis_SD VA.c
 ```
 
 ``` r
-draw_heatmap_function('ContainedData/Meta2dResult/AllSpecies/Neurospora.csv',  24,35,"Neurospora")
+draw_heatmap_function('ContainedData/Meta2dResult/AllSpecies/Neurospora_for_heatmap.csv',  19,42,"Neurospora")
 ```
 
 ``` r
@@ -256,10 +256,10 @@ for(i in 1:nrow(venn_data_new))
   common_num = as.numeric(venn_data_new[i,5])
   if(data1_all > data2_all)
   {
-    number_flag = 0
+    number_flag = 180
   }else
   {
-    number_flag = 180
+    number_flag = 0
   }
 
   temp_plot <- draw.pairwise.venn.pro(
@@ -339,21 +339,21 @@ number
     ##               Human&Mouse                 Human&Fly               Human&Yeast 
     ##                  7.849529                  6.822694                  8.027995 
     ##          Human&Neurospora         Human&Arabidopsis          Human&Green alga 
-    ##                  1.780415                  7.809316                  8.177474 
+    ##                  5.500645                  7.809316                  8.177474 
     ##       Human&Cyanobacteria                 Mouse&Fly               Mouse&Yeast 
     ##                  8.167770                 13.848252                 30.318984 
     ##          Mouse&Neurospora         Mouse&Arabidopsis          Mouse&Green alga 
-    ##                  2.656203                 22.895362                 25.387736 
+    ##                 12.667765                 22.895362                 25.387736 
     ##       Mouse&Cyanobacteria                 Fly&Yeast            Fly&Neurospora 
-    ##                 20.196353                 15.502889                  3.047091 
+    ##                 20.196353                 15.502889                  8.652706 
     ##           Fly&Arabidopsis            Fly&Green alga         Fly&Cyanobacteria 
     ##                 13.259531                 13.839208                 10.352423 
     ##          Yeast&Neurospora         Yeast&Arabidopsis          Yeast&Green alga 
-    ##                  2.355976                 21.569079                 49.888143 
+    ##                 19.281477                 21.569079                 49.888143 
     ##       Yeast&Cyanobacteria    Neurospora&Arabidopsis     Neurospora&Green alga 
-    ##                 25.000000                  2.971708                  2.160494 
+    ##                 25.000000                 11.744458                 14.799253 
     ##  Neurospora&Cyanobacteria    Arabidopsis&Green alga Arabidopsis&Cyanobacteria 
-    ##                  1.595745                 18.568189                 16.396845 
+    ##                 10.305344                 18.568189                 16.396845 
     ##  Green alga&Cyanobacteria 
     ##                 20.253165
 

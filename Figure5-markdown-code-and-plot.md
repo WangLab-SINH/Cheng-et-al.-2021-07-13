@@ -325,6 +325,7 @@ plot(density(log10(na.omit(rowrange(SG)))),
      xlab = 'log10(selection coefficient)',main = 'density of mouse cost'
      ,lwd = 2)
 abline(v = log10(S0),lwd = 2,lty = 2)
+abline(v = 0.00004255528, lwd=2, lty=2)
 ```
 
 ![](Figure5-markdown-code-and-plot_files/figure-gfm/unnamed-chunk-3-1.png)<!-- -->

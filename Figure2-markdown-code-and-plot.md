@@ -48,6 +48,22 @@ library(ggpubr)
 
 ``` r
 library(ggsci)
+library(ape)
+```
+
+    ## 
+    ## Attaching package: 'ape'
+
+    ## The following object is masked from 'package:ggpubr':
+    ## 
+    ##     rotate
+
+    ## The following object is masked from 'package:VennDiagram':
+    ## 
+    ##     rotate
+
+``` r
+library(reshape2)
 #calculate overlap percentage of gene ontology terms in different species
 file_dir <- "ContainedData/Plot_required_file/tissue14/enrich/"
 species <- c("Human","Mouse","Fly","Yeast","Neurospora","Arabidopsis","Green alga","Cyanobacteria")
@@ -70,8 +86,8 @@ for(i in 1:(length(species)-1))
     {
       for(l in 1:ncol(current_file2))
       {
-        current_data1 <- unique(current_file1[,k])
-        current_data2 <- unique(current_file2[,l])
+        current_data1 <- na.omit(unique(current_file1[,k]))
+        current_data2 <- na.omit(unique(current_file2[,l]))
         num <- num + 1
         species1_term_num <- species1_term_num + length(current_data1)
         species2_term_num <- species2_term_num + length(current_data2)
@@ -93,31 +109,31 @@ plot_data <- data.frame(percentage_list, percentage_name)
 colnames(plot_data) <- c("Percentage", "Species")
 plot_data_percentage <- plot_data[plot_data$Percentage!=0,1]
 number <- plot_data_percentage
-names(number) <- c("Human&Mouse","Human&Fly","Human&Yeast","Human&Neurospora","Human&Arabidopsis","Human&Green alga","Mouse&Fly","Mouse&Yeast","Mouse&Neurospora","Mouse&Arabidopsis","Mouse&Green alga","Mouse&Cyanobacteria","Fly&Yeast","Fly&Neurospora","Fly&Arabidopsis","Fly&Green alga","Fly&Cyanobacteria","Yeast&Neurospora","Yeast&Arabidopsis","Yeast&Green alga","Neurospora&Arabidopsis","Arabidopsis&Green alga","Arabidopsis&Cyanobacteria")
+names(number) <- c("Human&Mouse","Human&Fly","Human&Yeast","Human&Neurospora","Human&Arabidopsis","Human&Green alga","Mouse&Fly","Mouse&Yeast","Mouse&Neurospora","Mouse&Arabidopsis","Mouse&Green alga","Mouse&Cyanobacteria","Fly&Yeast","Fly&Neurospora","Fly&Arabidopsis","Fly&Green alga","Fly&Cyanobacteria","Yeast&Neurospora","Yeast&Arabidopsis","Yeast&Green alga","Neurospora&Arabidopsis","Neurospora&Green alga","Arabidopsis&Green alga","Arabidopsis&Cyanobacteria")
 number
 ```
 
     ##               Human&Mouse                 Human&Fly               Human&Yeast 
-    ##               0.115971223               0.024437928               0.035799523 
+    ##               0.112035661               0.024390244               0.036363636 
     ##          Human&Neurospora         Human&Arabidopsis          Human&Green alga 
-    ##               0.009685230               0.070353982               0.039534884 
+    ##               0.058165548               0.070935053               0.046798030 
     ##                 Mouse&Fly               Mouse&Yeast          Mouse&Neurospora 
-    ##               0.031622912               0.026620733               0.009334163 
+    ##               0.034208919               0.026171244               0.043314501 
     ##         Mouse&Arabidopsis          Mouse&Green alga       Mouse&Cyanobacteria 
-    ##               0.113078768               0.025450031               0.002531646 
+    ##               0.112537764               0.027371101               0.002607562 
     ##                 Fly&Yeast            Fly&Neurospora           Fly&Arabidopsis 
-    ##               0.151670951               0.014705882               0.073185363 
+    ##               0.157068063               0.121673004               0.077617329 
     ##            Fly&Green alga         Fly&Cyanobacteria          Yeast&Neurospora 
-    ##               0.017167382               0.005952381               0.017391304 
+    ##               0.016460905               0.005882353               0.357142857 
     ##         Yeast&Arabidopsis          Yeast&Green alga    Neurospora&Arabidopsis 
-    ##               0.049033149               0.105263158               0.023709902 
-    ##    Arabidopsis&Green alga Arabidopsis&Cyanobacteria 
-    ##               0.030423280               0.018045113
+    ##               0.049040512               0.109375000               0.071969697 
+    ##     Neurospora&Green alga    Arabidopsis&Green alga Arabidopsis&Cyanobacteria 
+    ##               0.113402062               0.030503979               0.012213740
 
 ``` r
-number <- number*100
+number <- number*10000
 data <- fromExpression(number)
-upset(data,nsets = 23,keep.order=TRUE,order.by="degree", sets=c("Cyanobacteria","Green alga","Arabidopsis","Neurospora","Yeast","Fly","Mouse","Human"), text.scale = c(2,1.5,1,1,2,1.5))
+upset(data,nsets = 24,keep.order=TRUE,order.by=c("degree"), sets=c("Cyanobacteria","Green alga","Arabidopsis","Neurospora","Yeast","Fly","Mouse","Human"), text.scale = c(2,1.5,1,1,2,1.5))
 ```
 
 ![](Figure2-markdown-code-and-plot_files/figure-gfm/unnamed-chunk-1-1.png)<!-- -->
@@ -181,18 +197,177 @@ for(i in 1:length(species)){
   new_temp <- rbind(new_temp, temp)
 }
 
-new_temp$`number` <- log(as.numeric(new_temp$`number`))
+new_temp$`number` <- log(as.numeric(new_temp$`number`) + 1)
 colnames(new_temp) <- c("overlap number", "species","number")
 new_temp <- new_temp[-1,]
 new_temp$species <- factor(new_temp$species,levels=c("human","mouse","fly","yeast","neurospora","arabidopsis","chlamydomonas","cyanobacteria"))
 #plot result
-pf2b1 = ggplot(new_temp, aes(x=`overlap number`, y=number,group=species)) + geom_line(color=c(rep("#8FC5CE",7),rep("#77B149",7),rep("#EBDB52",7),rep("#D88326",7),rep("#CB531D",7),rep("#B95E83",7),rep("#912260",7),rep("#C02A3E",7))) +geom_point(size=3, color=c(rep("#8FC5CE",7),rep("#77B149",7),rep("#EBDB52",7),rep("#D88326",7),rep("#CB531D",7),rep("#B95E83",7),rep("#912260",7),rep("#C02A3E",7)))+xlab(NULL)+ylab("Number (log)")+
+pf2b1 = ggplot(new_temp, aes(x=`overlap number`, y=number,group=species)) + geom_line(color=c(rep("#8FC5CE",7),rep("#77B149",7),rep("#EBDB52",7),rep("#D88326",7),rep("#CB531D",7),rep("#B95E83",8),rep("#912260",8),rep("#C02A3E",8))) +geom_point(size=3, color=c(rep("#8FC5CE",7),rep("#77B149",7),rep("#EBDB52",7),rep("#D88326",7),rep("#CB531D",7),rep("#B95E83",8),rep("#912260",8),rep("#C02A3E",8)))+xlab(NULL)+ylab("Number (log)")+
   theme(plot.title = element_text(size=20,face = "bold"),axis.line.y=element_line(linetype=1,color="black",size=1),axis.line.x=element_line(linetype=1,color="black",size=0.1),axis.text.y=element_text(size=15),axis.text.x=element_blank(),axis.title.y=element_text(size=15,face="bold"),axis.title.x=element_text(size=15,face="bold"),panel.grid.major =element_blank(), panel.grid.minor = element_blank(), panel.background = element_blank())+theme_wsj()
 
-pf2b1
+#pf2b1
 ```
 
-![](Figure2-markdown-code-and-plot_files/figure-gfm/unnamed-chunk-2-1.png)<!-- -->
+``` r
+#new gene
+tree<-read.tree("E:/circidian_algorithm/orthoFinder_result/Jul10_new/SpeciesTree_rooted.txt")
+dis_matrix<-cophenetic(tree)
+rownames(dis_matrix) <- c("Cyanobacteria", "Arabidopsis", "Green alga", "Neurospora", "Yeast", "Human", "Mouse", "Fly")
+colnames(dis_matrix) <- c("Cyanobacteria", "Arabidopsis", "Green alga", "Neurospora", "Yeast", "Human", "Mouse", "Fly")
+species <- c("Human", "Mouse", "Fly","Yeast","Neurospora","Arabidopsis","Green alga","Cyanobacteria")
+
+plot_list <- list()
+
+new_plot_data <- data.frame(0,0,0)
+for(i in 1:8){
+  temp <- c()
+  current_specie <- species[i]
+  temp_dis <- sort(dis_matrix[current_specie,])
+  temp_name_list = names(temp_dis)
+  current_specie_gene <- c()
+  for(j in 1:8){
+    if(j == 1){
+      current_temp_data_name <- paste0(paste0("ContainedData/Plot_required_file/tissue14/circidian_gene/",temp_name_list[1]), ".csv")
+      current_temp_data <- read.csv(current_temp_data_name)
+      temp_gene <- c()
+      for(m in 1:ncol(current_temp_data)){
+        temp_gene <- c(temp_gene ,na.omit(unique(current_temp_data[,m])))
+      }
+      temp <- c(temp, length(temp_gene))
+      current_specie_gene <- temp_gene
+      new_plot_data <- rbind(new_plot_data, c(1, species[i], length(current_specie_gene)))
+    }else{
+        for(k in 2:j){
+        current_temp_data_name <- paste0(paste0("ContainedData/Plot_required_file/tissue14/circidian_gene/",temp_name_list[k]), ".csv")
+        current_temp_data <- read.csv(current_temp_data_name)
+        temp_gene <- c()
+        for(m in 1:ncol(current_temp_data)){
+          temp_gene <- c(temp_gene ,na.omit(unique(current_temp_data[,m])))
+        }
+        
+        
+        
+        
+      current_file_name <- paste(paste(paste(paste("ContainedData/Plot_required_file/protein2gene_20210122/Figure2_data/",species[i],sep=""),'__v__',sep=""), temp_name_list[k],sep=""),".txt",sep="")
+    if (file.exists(current_file_name))
+    {
+      gene_list <- unique(read.table(current_file_name))
+      
+      gene1 <- current_specie_gene
+      gene2 <- temp_gene
+      
+      current_gene1 <- gene_list[gene_list$V1 %in% gene1,]$V1
+      current_gene2 <- gene_list[gene_list$V2 %in% gene2,]$V1
+      current_specie_gene <- intersect(current_gene1, current_gene2)
+    }else{
+       current_file_name <- paste(paste(paste(paste("ContainedData/Plot_required_file/protein2gene_20210122/Figure2_data/",temp_name_list[k],sep=""),'__v__',sep=""), species[i],sep=""),".txt",sep="")
+      gene_list <- unique(read.table(current_file_name))
+      
+      gene1 <- current_specie_gene
+      gene2 <- temp_gene
+      
+      current_gene1 <- gene_list[gene_list$V2 %in% gene1,]$V2
+      current_gene2 <- gene_list[gene_list$V1 %in% gene2,]$V2
+      current_specie_gene <- intersect(current_gene1, current_gene2)
+    }
+        
+ 
+        
+        }
+      new_plot_data <- rbind(new_plot_data, c(j, species[i], length(current_specie_gene)))
+      temp <- c(temp, length(current_specie_gene))
+    }
+    
+  }
+  
+}
+
+
+
+colnames(new_plot_data) <- c("overlap number", "species","number")
+new_plot_data <- new_plot_data[-1,]
+new_plot_data$species <- factor(new_plot_data$species,levels=c("Human","Mouse","Fly","Yeast","Neurospora","Arabidopsis","Green alga","Cyanobacteria"))
+# new_temp <- new_temp[new_temp$number != 0,]
+#plot result
+new_plot_data$number <- log(as.numeric(new_plot_data$number) + 1)
+pf2b2 = ggplot(new_plot_data, aes(x=`overlap number`, y=number,group=species)) +
+  geom_line(color=c(rep("#8FC5CE",8),rep("#77B149",8),rep("#EBDB52",8),rep("#D88326",8),rep("#CB531D",8),rep("#B95E83",8),rep("#912260",8),rep("#C02A3E",8))) +
+  geom_point(size=5, color=c(rep("#8FC5CE",8),rep("#77B149",8),rep("#EBDB52",8),rep("#D88326",8),rep("#CB531D",8),rep("#B95E83",8),rep("#912260",8),rep("#C02A3E",8))) +
+  xlab(NULL)+ylab("Number (log)") +
+  theme(plot.title = element_text(size=20,face = "bold"),axis.line.y=element_line(linetype=1,color="black",size=1),axis.line.x=element_line(linetype=1,color="black",size=0.1),axis.text.y=element_text(size=15),axis.text.x=element_blank(),axis.title.y=element_text(size=15,face="bold"),axis.title.x=element_text(size=15,face="bold"),panel.grid.major =element_blank(), panel.grid.minor = element_blank(), panel.background = element_blank()) +
+  theme_wsj()
+
+pf2b2
+```
+
+![](Figure2-markdown-code-and-plot_files/figure-gfm/unnamed-chunk-3-1.png)<!-- -->
+
+``` r
+#new term
+tree<-read.tree("E:/circidian_algorithm/orthoFinder_result/Jul10_new/SpeciesTree_rooted.txt")
+dis_matrix<-cophenetic(tree)
+rownames(dis_matrix) <- c("Cyanobacteria", "Arabidopsis", "Green alga", "Neurospora", "Yeast", "Human", "Mouse", "Fly")
+colnames(dis_matrix) <- c("Cyanobacteria", "Arabidopsis", "Green alga", "Neurospora", "Yeast", "Human", "Mouse", "Fly")
+species <- c("Human", "Mouse", "Fly","Yeast","Neurospora","Arabidopsis","Green alga","Cyanobacteria")
+plot_list <- list()
+
+new_plot_data <- data.frame(0,0,0)
+for(i in 1:8){
+  temp <- c()
+  current_specie <- species[i]
+  temp_dis <- sort(dis_matrix[current_specie,])
+  temp_name_list = names(temp_dis)
+  current_specie_gene <- c()
+  for(j in 1:8){
+    if(j == 1){
+      current_temp_data_name <- paste0(paste0("ContainedData/Plot_required_file/tissue14/enrich/",temp_name_list[1]), ".csv")
+      current_temp_data <- read.csv(current_temp_data_name)
+      temp_gene <- c()
+      for(m in 1:ncol(current_temp_data)){
+        temp_gene <- c(temp_gene ,na.omit(unique(current_temp_data[,m])))
+      }
+      temp <- c(temp, length(temp_gene))
+      current_specie_gene <- temp_gene
+      new_plot_data <- rbind(new_plot_data, c(1, species[i], length(current_specie_gene)))
+    }else{
+        for(k in 2:j){
+        current_temp_data_name <- paste0(paste0("ContainedData/Plot_required_file/tissue14/enrich/",temp_name_list[k]), ".csv")
+        current_temp_data <- read.csv(current_temp_data_name)
+        temp_gene <- c()
+        for(m in 1:ncol(current_temp_data)){
+          temp_gene <- c(temp_gene ,na.omit(unique(current_temp_data[,m])))
+        }
+        current_specie_gene <- intersect(current_specie_gene, temp_gene)
+        
+        }
+      new_plot_data <- rbind(new_plot_data, c(j, species[i], length(current_specie_gene)))
+      temp <- c(temp, length(current_specie_gene))
+    }
+    
+  }
+  
+}
+
+
+
+colnames(new_plot_data) <- c("overlap number", "species","number")
+new_plot_data <- new_plot_data[-1,]
+new_plot_data$species <- factor(new_plot_data$species,levels=c("Human","Mouse","Fly","Yeast","Neurospora","Arabidopsis","Green alga","Cyanobacteria"))
+# new_temp <- new_temp[new_temp$number != 0,]
+#plot result
+new_plot_data$number <- log(as.numeric(new_plot_data$number) + 1)
+new_plot_data1 <- new_plot_data[c(1:6,9:14,17:22,25:30,33:38,41:46,49:54,57:62),]
+pf2b2 = ggplot(new_plot_data1, aes(x=`overlap number`, y=number,group=species)) +
+  geom_line(color=c(rep("#8FC5CE",6),rep("#77B149",6),rep("#EBDB52",6),rep("#D88326",6),rep("#CB531D",6),rep("#B95E83",6),rep("#912260",6),rep("#C02A3E",6))) +
+  geom_point(size=5, color=c(rep("#8FC5CE",6),rep("#77B149",6),rep("#EBDB52",6),rep("#D88326",6),rep("#CB531D",6),rep("#B95E83",6),rep("#912260",6),rep("#C02A3E",6))) +
+  xlab(NULL)+ylab("Number (log)") +
+  theme(plot.title = element_text(size=20,face = "bold"),axis.line.y=element_line(linetype=1,color="black",size=1),axis.line.x=element_line(linetype=1,color="black",size=0.1),axis.text.y=element_text(size=15),axis.text.x=element_blank(),axis.title.y=element_text(size=15,face="bold"),axis.title.x=element_text(size=15,face="bold"),panel.grid.major =element_blank(), panel.grid.minor = element_blank(), panel.background = element_blank()) +
+  theme_wsj()
+
+pf2b2
+```
+
+![](Figure2-markdown-code-and-plot_files/figure-gfm/unnamed-chunk-4-1.png)<!-- -->
 
 ``` r
 source("plot_functions.R")
@@ -242,10 +417,7 @@ for(i in 1:length(species)){
   colnames(temp) <- c("overlap number", "species","number")
   new_temp <- rbind(new_temp, temp)
 }
-adddf = data.frame(c(1,5,6),"Cyanobacteria",1/exp(1))
-colnames(adddf) <- c("overlap number", "species","number")
-new_temp = rbind(new_temp,adddf)
-adddf = data.frame(c(6),"Green alga",1/exp(1))
+adddf = data.frame(c(1,5,2),"Cyanobacteria",1/exp(1))
 colnames(adddf) <- c("overlap number", "species","number")
 new_temp = rbind(new_temp,adddf)
 new_temp$`number` <- log(as.numeric(new_temp$`number`))
@@ -256,16 +428,14 @@ new_temp$species <- factor(new_temp$species,levels=c("Human","Mouse","Fly","Yeas
 #plot result
 
 pf2b2 = ggplot(new_temp, aes(x=`overlap number`, y=number,group=species)) +
-  geom_line(color=c(rep("#8FC5CE",6),rep("#77B149",6),rep("#EBDB52",6),rep("#D88326",6),rep("#CB531D",6),rep("#B95E83",6),rep("#912260",6),rep("#C02A3E",6))) +
-  geom_point(size=3, color=c(rep("#8FC5CE",6),rep("#77B149",6),rep("#EBDB52",6),rep("#D88326",6),rep("#CB531D",6),rep("#B95E83",6),rep("#912260",6),rep("#C02A3E",6))) +
+  geom_line(color=c(rep("#8FC5CE",6),rep("#77B149",6),rep("#EBDB52",6),rep("#D88326",6),rep("#CB531D",6),rep("#B95E83",6),rep("#912260",6),rep("#C02A3E",5))) +
+  geom_point(size=3, color=c(rep("#8FC5CE",6),rep("#77B149",6),rep("#EBDB52",6),rep("#D88326",6),rep("#CB531D",6),rep("#B95E83",6),rep("#912260",6),rep("#C02A3E",5))) +
   xlab(NULL)+ylab("Number (log)") +
   theme(plot.title = element_text(size=20,face = "bold"),axis.line.y=element_line(linetype=1,color="black",size=1),axis.line.x=element_line(linetype=1,color="black",size=0.1),axis.text.y=element_text(size=15),axis.text.x=element_blank(),axis.title.y=element_text(size=15,face="bold"),axis.title.x=element_text(size=15,face="bold"),panel.grid.major =element_blank(), panel.grid.minor = element_blank(), panel.background = element_blank()) +
   theme_wsj()
 
-pf2b2
+#pf2b2
 ```
-
-![](Figure2-markdown-code-and-plot_files/figure-gfm/unnamed-chunk-3-1.png)<!-- -->
 
 ``` r
 #compare overlap percentage of cycling gene and go term within or without species in mouse and arabidopsis
@@ -309,7 +479,7 @@ pf2c1
 
     ## Bin width defaults to 1/30 of the range of the data. Pick better value with `binwidth`.
 
-![](Figure2-markdown-code-and-plot_files/figure-gfm/unnamed-chunk-4-1.png)<!-- -->
+![](Figure2-markdown-code-and-plot_files/figure-gfm/unnamed-chunk-6-1.png)<!-- -->
 
 ``` r
 library(VennDiagram)
@@ -402,14 +572,15 @@ data_summary <- function(x) {
   ymax <- m+sd(x)
   return(c(y=m,ymin=ymin,ymax=ymax))
 }
-wilcox.test(as.numeric(venn_data_new$or), as.numeric(term_venn_data$X0.9))
+new_term_venn_Data_without_inf <- as.numeric(term_venn_data$X0.9[c(1:12,14:26,28)])
+wilcox.test(as.numeric(venn_data_new$or), new_term_venn_Data_without_inf)
 ```
 
     ## 
     ##  Wilcoxon rank sum test with continuity correction
     ## 
-    ## data:  as.numeric(venn_data_new$or) and as.numeric(term_venn_data$X0.9)
-    ## W = 140, p-value = 3.743e-05
+    ## data:  as.numeric(venn_data_new$or) and new_term_venn_Data_without_inf
+    ## W = 112, p-value = 1.332e-05
     ## alternative hypothesis: true location shift is not equal to 0
 
 ``` r
@@ -423,4 +594,4 @@ pf2c2
 
     ## Bin width defaults to 1/30 of the range of the data. Pick better value with `binwidth`.
 
-![](Figure2-markdown-code-and-plot_files/figure-gfm/unnamed-chunk-5-1.png)<!-- -->
+![](Figure2-markdown-code-and-plot_files/figure-gfm/unnamed-chunk-7-1.png)<!-- -->

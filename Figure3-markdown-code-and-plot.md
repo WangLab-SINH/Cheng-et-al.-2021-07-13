@@ -158,7 +158,8 @@ draw_exp_range_lineplot <- function(exp_data_name, range1, range2, exp_plot_name
   theme(axis.line.y = element_line(size=1, colour = "black"))+    
   labs(x=NULL, y=NULL)+
   theme(legend.position = 'none')+
-  scale_color_brewer(palette = 'Dark2')
+  scale_color_manual(values=c("#D95F02","#189E77"))
+ # scale_color_brewer(palette = 'Dark2')
 
 
   plot_list1 <<- c(plot_list1, list(p))
@@ -224,11 +225,11 @@ draw_exp_range_lineplot('ContainedData/Meta2dResult/AllSpecies/Yeast_low.csv',  
     ## [1] 5.951693e-54
 
 ``` r
-draw_exp_range_lineplot('ContainedData/Meta2dResult/AllSpecies/Neurospora.csv',  24,35,"exp_boxplot_neurospora.pdf",
+draw_exp_range_lineplot('ContainedData/Meta2dResult/AllSpecies/Neurospora_for_heatmap.csv',  19,42,"exp_boxplot_neurospora.pdf",
                         "range_boxplot_neurospora.pdf","pvalue_heatmap_neurospora.pdf")
 ```
 
-    ## [1] 2.63036e-12
+    ## [1] 2.835685e-11
 
 ``` r
 draw_exp_range_lineplot('ContainedData/Meta2dResult/AllSpecies/Arabidopsis_SD LEAF.csv',  24,35,"exp_boxplot_arabidopsis_Sd leaf.pdf",
@@ -313,17 +314,19 @@ draw_exp_range_boxplot <- function(exp_data_name, range1, range2, exp_plot_name,
   }
   cir_input <- rowMeans(circ_exp)
   non_cir_input <- rowMeans(non_circ_exp)
-  
+
 
  #compare between range of cycling gene and non-cycling gene
   cir_input <- apply(circ_exp,1, function(x){return(max(x) - min(x))})
   non_cir_input <- apply(non_circ_exp,1, function(x){return(max(x) - min(x))})
+  
+  print(wilcox.test(as.numeric(cir_input), as.numeric(non_cir_input), alternative = "greater")$p.value)
   cir_input_new <- as.numeric(cir_input)
   non_cir_input_new <- as.numeric(non_cir_input)
   data <- data.frame(c(cir_input_new, non_cir_input_new), 
                      c(rep("Circidian", length(cir_input_new)), rep("Not circidian", length(non_cir_input_new))))
   colnames(data) <- c("Expression", "Group")
-  print(wilcox.test(cir_input_new, non_cir_input_new, alternative = "greater")$p.value)
+  
   ylim1 = boxplot.stats(log10(data$Expression))$stats[c(1, 5)]
 
   
@@ -342,8 +345,10 @@ draw_exp_range_boxplot <- function(exp_data_name, range1, range2, exp_plot_name,
     theme(axis.line.y = element_line(size=1, colour = "black"))+    
     labs(x=NULL, y=NULL)+
     theme(legend.position = 'none')+
-    scale_color_brewer(palette = 'Dark2')+
-    scale_fill_brewer(palette = 'Dark2')
+    scale_color_manual(values=c("#D95F02","#189E77"))+
+  scale_fill_manual(values=c("#D95F02","#189E77"))
+    # scale_color_brewer(palette = 'Dark2')+
+    # scale_fill_brewer(palette = 'Dark2')
    
 
   plot_list2 <<- c(plot_list2, list(p_new))
@@ -410,11 +415,11 @@ draw_exp_range_boxplot('ContainedData/Meta2dResult/AllSpecies/Yeast_low.csv',  2
     ## [1] 5.398403e-148
 
 ``` r
-draw_exp_range_boxplot('ContainedData/Meta2dResult/AllSpecies/Neurospora.csv',  24,35,"exp_boxplot_neurospora.pdf",
+draw_exp_range_boxplot('ContainedData/Meta2dResult/AllSpecies/Neurospora.csv',  19,90,"exp_boxplot_neurospora.pdf",
                         "range_boxplot_neurospora.pdf","pvalue_heatmap_neurospora.pdf")
 ```
 
-    ## [1] 3.924381e-17
+    ## [1] 8.912035e-08
 
 ``` r
 draw_exp_range_boxplot('ContainedData/Meta2dResult/AllSpecies/Arabidopsis_SD LEAF.csv',  24,35,"exp_boxplot_arabidopsis_Sd leaf.pdf",
@@ -581,7 +586,7 @@ draw_expression_percentage_plot('ContainedData/Meta2dResult/AllSpecies/Yeast_hig
 draw_expression_percentage_plot('ContainedData/Meta2dResult/AllSpecies/Yeast_low.csv',  24,47,"expression_expression_yeast_low.pdf",
                                 "Yeast low")
 
-draw_expression_percentage_plot('ContainedData/Meta2dResult/AllSpecies/Neurospora.csv',  24,35,"expression_expression_neurospora.pdf",
+draw_expression_percentage_plot('ContainedData/Meta2dResult/AllSpecies/Neurospora.csv',  19,90,"expression_expression_neurospora.pdf",
                                 "Neurospora")
 
 draw_expression_percentage_plot('ContainedData/Meta2dResult/AllSpecies/Arabidopsis_SD LEAF.csv',  24,35,"expression_expression_arabidopsis_sd leaf.pdf",
@@ -724,7 +729,7 @@ draw_range_percentage_plot('ContainedData/Meta2dResult/AllSpecies/Yeast_high.csv
 draw_range_percentage_plot('ContainedData/Meta2dResult/AllSpecies/Yeast_low.csv',  24,47,"range_expression_yeast_low.pdf",
                            "Yeast low")
 
-draw_range_percentage_plot('ContainedData/Meta2dResult/AllSpecies/Neurospora.csv',  24,35,"range_expression_neurospora.pdf",
+draw_range_percentage_plot('ContainedData/Meta2dResult/AllSpecies/Neurospora.csv',  19,90,"range_expression_neurospora.pdf",
                            "Neurospora")
 
 draw_range_percentage_plot('ContainedData/Meta2dResult/AllSpecies/Arabidopsis_SD LEAF.csv',  24,35,"range_expression_arabidopsis_sd leaf.pdf",
@@ -754,13 +759,7 @@ ggarrange(plotlist = plot_list4,nrow=15,ncol = 1,align = 'v')
 
 ``` r
 # 5
-exp_data_name = 'ContainedData/Meta2dResult/AllSpecies/Human_blood.csv'
-range1 = 19
-range2 = 233
-plot_name = 'amplitude_expression_human_blood.pdf'
-plot_title =  "Human blood"
-
-# 
+cor_list <- c()
 draw_dotplot_exp_amp <- function(exp_data_name, range1, range2, plot_name, plot_title, now_color){
   #exp_data_name: name of expression file
   #range1: start column number of expression data
@@ -794,8 +793,10 @@ draw_dotplot_exp_amp <- function(exp_data_name, range1, range2, plot_name, plot_
   colcol = brewer.pal(n = 3,name = 'Dark2')[1]
   colcolline = brewer.pal(n = 6,name = 'Set1')[4]
   print(cor.test(data$expression, data$amplitude)$p.value)
+  print(cor.test(data$expression, data$amplitude)$estimate)
   print((cor.test(data$expression, data$amplitude)$estimate)^2)
-     p5 <- ggplot(data, aes(x=amplitude, y=expression)) +
+  cor_list <<- c(cor_list, (cor.test(data$expression, data$amplitude)$estimate)^2)
+     p5 <- ggplot(data, aes(x=expression, y=amplitude)) +
        geom_bin2d(bins = 24)+
        scale_fill_gradient(low = colcol,high = "#E8F5F1")+
 
@@ -825,6 +826,8 @@ draw_dotplot_exp_amp('ContainedData/Meta2dResult/AllSpecies/Human_blood.csv',  1
 
     ## [1] 0
     ##       cor 
+    ## 0.9661334 
+    ##       cor 
     ## 0.9334137
 
 ``` r
@@ -834,6 +837,8 @@ draw_dotplot_exp_amp('ContainedData/Meta2dResult/AllSpecies/Human_skin.csv',  19
 
     ## [1] 0
     ##       cor 
+    ## 0.8999858 
+    ##       cor 
     ## 0.8099745
 
 ``` r
@@ -841,6 +846,8 @@ draw_dotplot_exp_amp('ContainedData/Meta2dResult/AllSpecies/Mouse_LIV.csv',  24,
 ```
 
     ## [1] 0
+    ##       cor 
+    ## 0.9076934 
     ##       cor 
     ## 0.8239072
 
@@ -851,6 +858,8 @@ draw_dotplot_exp_amp('ContainedData/Meta2dResult/AllSpecies/Mouse_KID.csv',  24,
 
     ## [1] 0
     ##       cor 
+    ## 0.9030413 
+    ##       cor 
     ## 0.8154836
 
 ``` r
@@ -859,6 +868,8 @@ draw_dotplot_exp_amp('ContainedData/Meta2dResult/AllSpecies/Fly_old.csv',  24,35
 ```
 
     ## [1] 0
+    ##       cor 
+    ## 0.9401946 
     ##       cor 
     ## 0.8839659
 
@@ -869,6 +880,8 @@ draw_dotplot_exp_amp('ContainedData/Meta2dResult/AllSpecies/Fly_young.csv',  24,
 
     ## [1] 0
     ##       cor 
+    ## 0.9399145 
+    ##       cor 
     ## 0.8834392
 
 ``` r
@@ -878,6 +891,8 @@ draw_dotplot_exp_amp('ContainedData/Meta2dResult/AllSpecies/Yeast_high.csv',  24
 
     ## [1] 0
     ##       cor 
+    ## 0.8507765 
+    ##       cor 
     ## 0.7238207
 
 ``` r
@@ -886,17 +901,21 @@ draw_dotplot_exp_amp('ContainedData/Meta2dResult/AllSpecies/Yeast_low.csv',  24,
 ```
 
     ## [1] 0
+    ##       cor 
+    ## 0.8516989 
     ##      cor 
     ## 0.725391
 
 ``` r
-draw_dotplot_exp_amp('ContainedData/Meta2dResult/AllSpecies/Neurospora.csv',  24,35,"amplitude_expression_neurospora.pdf",
+draw_dotplot_exp_amp('ContainedData/Meta2dResult/AllSpecies/Neurospora.csv',  19,90,"amplitude_expression_neurospora.pdf",
                      "Neurospora","#FC8D62")
 ```
 
-    ## [1] 1.042372e-114
+    ## [1] 0
+    ##      cor 
+    ## 0.951344 
     ##       cor 
-    ## 0.9175987
+    ## 0.9050554
 
 ``` r
 draw_dotplot_exp_amp('ContainedData/Meta2dResult/AllSpecies/Arabidopsis_SD LEAF.csv',  24,35,"amplitude_expression_arabidopsis_sd leaf.pdf",
@@ -904,6 +923,8 @@ draw_dotplot_exp_amp('ContainedData/Meta2dResult/AllSpecies/Arabidopsis_SD LEAF.
 ```
 
     ## [1] 0
+    ##       cor 
+    ## 0.9492228 
     ##       cor 
     ## 0.9010238
 
@@ -914,6 +935,8 @@ draw_dotplot_exp_amp('ContainedData/Meta2dResult/AllSpecies/Arabidopsis_SD M.csv
 
     ## [1] 0
     ##       cor 
+    ## 0.9590201 
+    ##       cor 
     ## 0.9197196
 
 ``` r
@@ -922,6 +945,8 @@ draw_dotplot_exp_amp('ContainedData/Meta2dResult/AllSpecies/Arabidopsis_SD VA.cs
 ```
 
     ## [1] 0
+    ##     cor 
+    ## 0.94936 
     ##       cor 
     ## 0.9012845
 
@@ -932,6 +957,8 @@ draw_dotplot_exp_amp('ContainedData/Meta2dResult/AllSpecies/Chlamydomounas.csv',
 
     ## [1] 0
     ##       cor 
+    ## 0.9265458 
+    ##       cor 
     ## 0.8584871
 
 ``` r
@@ -941,6 +968,8 @@ draw_dotplot_exp_amp('ContainedData/Meta2dResult/AllSpecies/Cyanobacteria.csv', 
 
     ## [1] 1.26304e-138
     ##       cor 
+    ## 0.8173684 
+    ##       cor 
     ## 0.6680911
 
 ``` r
@@ -949,6 +978,8 @@ draw_dotplot_exp_amp('ContainedData/Meta2dResult/AllSpecies/Simulation.csv',  24
 ```
 
     ## [1] 0
+    ##       cor 
+    ## 0.9159094 
     ##     cor 
     ## 0.83889
 
