@@ -12,7 +12,7 @@ Usage:
 ===
 Cycling gene calculation: 
 ---
-All species expect yeast and neurospora:
+All species expect yeast:
 
 meta2d(infile=input_file, filestyle=“csv”, outdir=output_file,timepoints=“Line1”,outRawData=TRUE,minper=20,maxper=28, cycMethod = c(“ARS”, “JTK”, “LS”))
 
@@ -24,9 +24,6 @@ Yeast low glucose:
 
 meta2d(infile=input_file, filestyle=“csv”, outdir=output_file,timepoints=“Line1”,outRawData=TRUE,minper=5,maxper=15, cycMethod = c(“ARS”, “JTK”, “LS”),ARSdefaultPer=360,ARSmle=“nomle”)
 
-Neurospora:
-
-meta2d(infile=input_file, filestyle="csv", outdir=output_file,outRawData=TRUE,minper=18,maxper=26, cycMethod = c("ARS", "JTK", "LS"))
  
 Data contained in this paper:
 ---
