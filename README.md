@@ -28,8 +28,11 @@ meta2d(infile=input_file, filestyle=“csv”, outdir=output_file,timepoints=“
 Data contained in this paper:
 ---
 All mRNA level expression data in this paper can be found at' All_meta2d_result' folder.
+
 All data about calculating energy cost can be found at 'Energy cost' folder.
+
 Gene ontology raw input data and enrich result can be found at 'GO_pather_result' folder.
+
 Data that simulation required can ben found at 'SImulation' folder.
 
 Code in this paper:
