@@ -66,7 +66,7 @@ MouseCalculateCost <- function(){
   # LPRE_RNA，向量 ----------------------------------------------------
   LPRE_RNA = LMAT_RNA
   # D_RNA，向量 ---------------------------------------------------------
-  tmp = read.table("EnergyCost/Mouse_data2.txt",header = T)
+  tmp = read.table("EnergyCost/Mouse_data.txt",header = T)
   HL_RNA = tmp$mRNA_half.life_h
   D_RNA = log(2)/HL_RNA
   names(D_RNA) = tmp$ID
@@ -191,7 +191,7 @@ MouseCalculateCost <- function(){
   # LPRE_PRO，向量 ----------------------------------------------
   LPRE_PRO = LMAT_PRO
   # D_PRO，向量 ----------------------------------------------------
-  tmp = read.table("EnergyCost/Mouse_data2.txt",header = T)
+  tmp = read.table("EnergyCost/Mouse_data.txt",header = T)
   HL_PRO = tmp$Protein_half.life_h
   D_PRO = log(2)/HL_PRO
   names(D_PRO) = tmp$ID
@@ -201,10 +201,10 @@ MouseCalculateCost <- function(){
   # # 方式三，通过一次实验中的数据得到R_RNA与R_PRO的比例关系，并用到全体时刻中
   # # mouse中暂用该方式
   # # 若计算F_PRO时使用RIB方式，则不需要计算R_PRO
-  # tmp = read.table("E:/RESEARCH_DATA/circadian/cost_model/Mouse_data2.txt",header = T)
+  # tmp = read.table("E:/RESEARCH_DATA/circadian/cost_model/Mouse_data.txt",header = T)
   # tmp1 = tmp$mRNA_copy_number
   # names(tmp1) = tmp$ID
-  # tmp = read.table("E:/RESEARCH_DATA/circadian/cost_model/Mouse_data2.txt",header = T)
+  # tmp = read.table("E:/RESEARCH_DATA/circadian/cost_model/Mouse_data.txt",header = T)
   # tmp2 = tmp$Protein_copy_number
   # names(tmp2) = tmp$ID
   # tmp = tmp2/tmp1
@@ -486,7 +486,7 @@ YeastCalculateCost <- function(){
   # 基本符号CC=sumCM，LPRE，D=ln2/HL，R=expr，F ---------------------
   # RNA --------------------------------------------------------------
   # mRNA的序列与长度，sequence_list_DNA，sequence_list_name_DNA，LMAT_RNA
-  con = file("EnergyCost/yeast_codingseq_clean_All2.txt", "r")
+  con = file("EnergyCost/yeast_codingseq_clean_All.txt", "r")
   sequence_list_DNA = c()
   sequence_list_name_DNA = c()
   for(i in 1:13384){
@@ -521,7 +521,7 @@ YeastCalculateCost <- function(){
   LPRE_RNA = tmp$Transcript.end..bp.-tmp$Transcript.start..bp.+1
   names(LPRE_RNA) = tmp$Gene.stable.ID
   # D_RNA，向量 ---------------------------------------------------------
-  tmp = read.table("EnergyCost/yeast_parameters2.txt",header = T)
+  tmp = read.table("EnergyCost/yeast_parameters.txt",header = T)
   HL_RNA = tmp$mRNA_halflive
   D_RNA = log(2)/HL_RNA
   names(D_RNA) = tmp$ID
@@ -553,7 +553,7 @@ YeastCalculateCost <- function(){
   # F_US2_RNA
   # PRO --------------------------------------------------------------
   # PRO的序列与长度，sequence_list_name_PRO，sequence_list_PRO，LMAT_PRO
-  con = file("EnergyCost/yeast_protein_clean_All2.txt", "r")
+  con = file("EnergyCost/yeast_protein_clean_All.txt", "r")
   sequence_list_name_PRO = c()
   sequence_list_PRO = c()
   for(i in 1:13384){
@@ -587,7 +587,7 @@ YeastCalculateCost <- function(){
   # LPRE_PRO，向量 ----------------------------------------------
   LPRE_PRO = LMAT_PRO
   # D_PRO，向量 ----------------------------------------------------
-  tmp = read.table("EnergyCost/yeast_parameters2.txt",header = T)
+  tmp = read.table("EnergyCost/yeast_parameters.txt",header = T)
   HL_PRO = tmp$Protein_halflive
   D_PRO = log(2)/HL_PRO
   names(D_PRO) = tmp$ID
