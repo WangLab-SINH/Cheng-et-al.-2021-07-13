@@ -1,6 +1,6 @@
 Description:
 ===
-This document provides the codes analyzing all the cycling transcriptomes in the article
+This document provides the codes analyzing all the cycling transcriptomes in the article.
 
 Requirements:
 ===
