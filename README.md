@@ -20,11 +20,11 @@ meta2d(infile=input_file, filestyle=“csv”, outdir=output_file,timepoints=“
 
 For Yeast (high glucose condition):
 
-meta2d(infile=input_file, filestyle=“csv”, outdir=output_file,timepoints=“Line1”,outRawData=TRUE,minper=4,maxper=14, cycMethod = c(“ARS”, “JTK”, “LS”),ARSdefaultPer=120,ARSmle=“nomle”)
+meta2d(infile=input_file, filestyle=“csv”, outdir=output_file,timepoints=“Line1”,outRawData=TRUE,minper=4,maxper=14, cycMethod = c(“ARS”, “JTK”, “LS”),ARSdefaultPer=9,ARSmle=“nomle”)
 
 For Yeast (low glucose condition):
 
-meta2d(infile=input_file, filestyle=“csv”, outdir=output_file,timepoints=“Line1”,outRawData=TRUE,minper=5,maxper=15, cycMethod = c(“ARS”, “JTK”, “LS”),ARSdefaultPer=360,ARSmle=“nomle”)
+meta2d(infile=input_file, filestyle=“csv”, outdir=output_file,timepoints=“Line1”,outRawData=TRUE,minper=5,maxper=15, cycMethod = c(“ARS”, “JTK”, “LS”),ARSdefaultPer=10,ARSmle=“nomle”)
 
  
 Data contained in this paper:
