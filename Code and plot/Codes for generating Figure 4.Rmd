@@ -30,7 +30,8 @@ path_DirEightSpieces = 'All_meta2d_result/AllSpecies/'
       expr = expr[ind_pc,]   
       expr_mean = log(expr$meta2d_Base)
       expr_amp = log(expr$meta2d_AMP)
-      expr_range <- apply(expr[,c(range1[i]:range2[i])],1, function(x){return(max(x) - min(x))})
+      #expr_range <- apply(expr[,c(range1[i]:range2[i])],1, function(x){return(max(x) - min(x))})
+      expr_range = expr$meta2d_rAMP
       expr_ramp = log(expr$meta2d_rAMP)
       ind_bhq005 = expr$meta2d_BH.Q<0.05
     }
@@ -104,8 +105,8 @@ for(i in id_ShowNumAllTissues)
     expr = expr[ind_pc,]    
     expr_mean = log(expr$meta2d_Base)
     expr_amp = log(expr$meta2d_AMP)
-    expr_range <- log(apply(expr[,c(range1[i]:range2[i])],1, function(x){return(max(x) - min(x))}))
-    #expr_ramp = log(expr$meta2d_rAMP)
+    #expr_range <- log(apply(expr[,c(range1[i]:range2[i])],1, function(x){return(max(x) - min(x))}))
+    expr_range = expr$meta2d_rAMP
     expr_ramp = log(expr$meta2d_rAMP)
     ind_bhq005 = expr$meta2d_BH.Q<0.05
   }

@@ -215,8 +215,8 @@ draw_exp_range_boxplot <- function(exp_data_name, range1, range2, exp_plot_name,
 
 
  #compare between range of cycling gene and non-cycling gene
-  cir_input <- apply(circ_exp,1, function(x){return(max(x) - min(x))})
-  non_cir_input <- apply(non_circ_exp,1, function(x){return(max(x) - min(x))})
+  cir_input <- tmp[id_BoolCirOrderedMouse,"meta2d_rAMP"]
+  non_cir_input <- tmp[!id_BoolCirOrderedMouse,"meta2d_rAMP"]
   
   print(wilcox.test(as.numeric(cir_input), as.numeric(non_cir_input), alternative = "greater")$p.value)
   cir_input_new <- as.numeric(cir_input)
@@ -477,7 +477,7 @@ draw_range_percentage_plot <- function(exp_data_name, range1, range2, plot_name,
   mean_data <- c()
 
   tmp = mouse_data[,range1:range2]
-  max_min_data = apply(tmp, 1, function(x){max(x) - min(x)})
+  max_min_data = mouse_data$meta2d_rAMP
   mean_data = apply(tmp, 1, function(x){mean(as.numeric(x))})
   
   plot_data <- data.frame(mouse_data$CycID, max_min_data, mean_data,0)
@@ -605,119 +605,12 @@ draw_range_percentage_plot('All_meta2d_result/AllSpecies/Simulation.csv',  24,95
 ggarrange(plotlist = plot_list4,nrow=15,ncol = 1,align = 'v')
 ```
 
-```{r, warning=FALSE,fig.width=10,fig.height=30}
-# 5
-cor_list <- c()
-draw_dotplot_exp_amp <- function(exp_data_name, range1, range2, plot_name, plot_title, now_color){
-  #exp_data_name: name of expression file
-  #range1: start column number of expression data
-  #range2: end column number of expression data
-  #plot_name: output file name
-  #plot_title: title of plot
-  #now_color: color of dot plot
-  tissuename<- c(plot_title)
-  aa= matrix(0,nrow = 1,ncol = 3)
-  rownames(aa)= tissuename
-  colnames(aa)= c('cor','pvalue','R2')
-  aaa= matrix(0,nrow = 1,ncol = 2)
-  expr = read.csv(exp_data_name)
-  gene_data <- expr[expr$meta2d_BH.Q < 0.05,]
-  #gene_data <- expr
-  cir = gene_data$CycID
-  expr_cir = expr[expr$CycID %in% cir,]
-  expr_cir <- expr_cir[expr_cir[,'meta2d_AMP']!=0,]
-  expr_cirmean= rowMeans(expr_cir[,range1:range2], na.rm = TRUE)
-  aa[1,1]=cor.test(log10(as.numeric(expr_cirmean)),log10(as.numeric(expr_cir[,'meta2d_AMP'])))$estimate
-  aa[1,2]=cor.test(log10(as.numeric(expr_cirmean)),log10(as.numeric(expr_cir[,'meta2d_AMP'])))$p.value
-  aa[1,3]= aa[1,1]^2
-  aaa[1,1]= aa[1,'R2']
-  aaa[1,2]= 1- aa[1,'R2']
-  i=1
-  data <- data.frame(expr_cirmean, expr_cir[,'meta2d_AMP'])
-  data <- data.frame(log10(expr_cirmean), log10(expr_cir[,'meta2d_AMP']))
-  colnames(data) <- c("expression", "amplitude")
 
-  
-  colcol = brewer.pal(n = 3,name = 'Dark2')[1]
-  colcolline = brewer.pal(n = 6,name = 'Set1')[4]
-  print(cor.test(data$expression, data$amplitude)$p.value)
-  print(cor.test(data$expression, data$amplitude)$estimate)
-  print((cor.test(data$expression, data$amplitude)$estimate)^2)
-  cor_list <<- c(cor_list, (cor.test(data$expression, data$amplitude)$estimate)^2)
-     p5 <- ggplot(data, aes(x=expression, y=amplitude)) +
-       geom_bin2d(bins = 24)+
-       scale_fill_gradient(low = colcol,high = "#E8F5F1")+
-
-     stat_smooth(method='lm',formula = y~x+ I(x^2),colour=colcolline,size = 1,se = F) +
-    theme_bw() + 
-    theme(axis.text.y = element_text(size = 15, face = "bold"))+
-    theme(panel.grid =element_blank()) +   
-    theme(axis.text = element_blank()) +   
-    theme(axis.ticks = element_blank()) +  
-    theme(panel.border = element_blank()) +   
-    theme(axis.line.x= element_line(size=1, colour = "black"))+   
-    theme(axis.line.y= element_line(size=1, colour = "black"))+   
-    labs(x=NULL, y=NULL)+
-    theme(legend.position = 'none')
-
-  plot_list5 <<- c(plot_list5, list(p5))
-}
-```
-
-
-```{r, warning=FALSE,fig.width=10,fig.height=30}
-plot_list5 = list()
-
-# 5
-draw_dotplot_exp_amp('All_meta2d_result/AllSpecies/Human_blood.csv',  19,233,"amplitude_expression_human_blood.pdf",
-                     "Human blood","#FC8D62")
-draw_dotplot_exp_amp('All_meta2d_result/AllSpecies/Human_skin.csv',  19,94,"amplitude_expression_human_skin.pdf",
-                     "Human skin","#FC8D62")
-
-draw_dotplot_exp_amp('All_meta2d_result/AllSpecies/Mouse_LIV.csv',  24,35,"amplitude_expression_mouse_liver.pdf", "Mouse liver","#FC8D62")
-draw_dotplot_exp_amp('All_meta2d_result/AllSpecies/Mouse_KID.csv',  24,35,"amplitude_expression_mouse_kidney.pdf",
-                     "Mouse kidney","#FC8D62")
-
-draw_dotplot_exp_amp('All_meta2d_result/AllSpecies/Fly_old.csv',  24,35,"amplitude_expression_fly_old.pdf",
-                     "Fly old","#FC8D62")
-draw_dotplot_exp_amp('All_meta2d_result/AllSpecies/Fly_young.csv',  24,35,"amplitude_expression_fly_young.pdf",
-                     "Fly young","#FC8D62")
-
-draw_dotplot_exp_amp('All_meta2d_result/AllSpecies/Yeast_high.csv',  24,43,"amplitude_expression_yeast_high.pdf",
-                     "Yeast high","#FC8D62")
-draw_dotplot_exp_amp('All_meta2d_result/AllSpecies/Yeast_low.csv',  24,47,"amplitude_expression_yeast_low.pdf",
-                     "Yeast low","#FC8D62")
-
-draw_dotplot_exp_amp('All_meta2d_result/AllSpecies/Neurospora.csv',  19,90,"amplitude_expression_neurospora.pdf",
-                     "Neurospora","#FC8D62")
-
-draw_dotplot_exp_amp('All_meta2d_result/AllSpecies/Arabidopsis_SD LEAF.csv',  24,35,"amplitude_expression_arabidopsis_sd leaf.pdf",
-                     "Arabidopsis sd leaf","#FC8D62")
-draw_dotplot_exp_amp('All_meta2d_result/AllSpecies/Arabidopsis_SD M.csv',  24,35,"amplitude_expression_arabidopsis_sd m.pdf",
-                     "Arabidopsis sd m","#FC8D62")
-draw_dotplot_exp_amp('All_meta2d_result/AllSpecies/Arabidopsis_SD VA.csv',  24,35,"amplitude_expression_arabidopsis_sd va.pdf",
-                     "Arabidopsis sd va","#FC8D62")
-
-
-
-draw_dotplot_exp_amp('All_meta2d_result/AllSpecies/Chlamydomounas.csv',  19,34,"amplitude_expression_chlam.pdf",
-                     "Green alga","#FC8D62")
-
-draw_dotplot_exp_amp('All_meta2d_result/AllSpecies/Cyanobacteria.csv',  19,38,"amplitude_expression_cyano.pdf",
-                     "Cyanobacteria","#FC8D62")
-draw_dotplot_exp_amp('All_meta2d_result/AllSpecies/Simulation.csv',  24,95,"amplitude_expression_cyano.pdf",
-                     "Simulation","#FC8D62")
-```
-
-
-```{r, warning=FALSE,fig.width=2,fig.height=20}
-ggarrange(plotlist = plot_list5,nrow=15,ncol = 1,align = 'v')
-```
 
 
 ```{r, warning=FALSE,fig.width=10,fig.height=20}
-ggarrange(plotlist = arrangebycol(plot_list1,plot_list2,plot_list3,plot_list4,plot_list5),
-          nrow=15,ncol = 5,align = 'v')
+ggarrange(plotlist = arrangebycol(plot_list1,plot_list2,plot_list3,plot_list4),
+          nrow=15,ncol = 4,align = 'v')
 ```
 
 
